@@ -1,4 +1,8 @@
-import { defaultFieldResolver, buildSchema, getDirectiveValues } from 'graphql'
+import {
+  defaultFieldResolver,
+  buildSchema,
+  getDirectiveValues,
+} from 'graphql/index.mjs'
 
 export default ({ document, resolvers = {}, directives = {} }) => {
   const built_schema = buildSchema(document, { noLocation: true })
@@ -9,15 +13,25 @@ export default ({ document, resolvers = {}, directives = {} }) => {
 
     Object.entries(fields_handlers).forEach(([field_name, handler]) => {
       const field = fields[field_name]
+      const handler_type = handler?.constructor?.name
 
-      /* c8 ignore next 1 */
       if (!field) throw new Error(`${field_name} is not in schema`)
-      if (typeof handler === 'function') field.resolve = handler
-      else {
-        const { resolve, subscribe } = handler
+      switch (handler_type) {
+        case 'GeneratorFunction':
+        case 'AsyncGeneratorFunction':
+          field.subscribe = handler
+          break
+        case 'AsyncFunction':
+        case 'Function':
+          field.resolve = handler
+          break
+        default: {
+          const { resolve, subscribe } = handler
 
-        field.resolve = resolve ?? defaultFieldResolver
-        field.subscribe = subscribe
+          field.resolve = resolve
+          field.subscribe = subscribe
+          break
+        }
       }
     })
   })
