@@ -1,6 +1,6 @@
 {
   "name": "@hydre/make_schema",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "An utility function to build a graphql schema",
   "type": "module",
   "main": "./index.js",
