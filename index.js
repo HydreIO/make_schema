@@ -1,8 +1,4 @@
-import {
-  defaultFieldResolver,
-  buildSchema,
-  getDirectiveValues,
-} from 'graphql/index.mjs'
+import { defaultFieldResolver, buildSchema, getDirectiveValues } from 'graphql'
 
 export default ({ document, resolvers = {}, directives = {} }) => {
   const built_schema = buildSchema(document, { noLocation: true })
